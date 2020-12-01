@@ -2,7 +2,7 @@
 """
 Created on Sun Nov 29 13:21:22 2020
 
-@author: mu_hp
+Autores: Felipe Murakami Caldas Tourinho; Gabriel Biscardi; Murilo Henrique Pasini Trevisan
 """
 import numpy as np
 import csv
@@ -20,8 +20,8 @@ print('\n\n\n')
 print(mes)
 
 # Para prever a função a um valor específico, comentar a proxima linha e descomentar a debaixo
-#x = symbols("x")
-x = 71
+x = symbols("x")
+#x = 7
 
 coeficientes = []
 pontos = 60
@@ -38,11 +38,13 @@ for indice in range(pontos):
     coeficientes.append(L)
 
 print ('\n\n\n')
-#print ('L59 =', coeficientes[58])
+print ('L0 =', coeficientes[0])
+print ('L1 =', coeficientes[1])
+print ('L2 =', coeficientes[2])
 
 pn = 0
 
-for i in range(len(coeficientes)):
-    pn += precipt[i]*coeficientes[i]
+for k in range(len(coeficientes)):
+    pn += precipt[k]*coeficientes[k]
 
-print ('P60(x) = ', pn)
+print ('P', str(pontos-1), '=(x) = ', sympy.expand(pn))
