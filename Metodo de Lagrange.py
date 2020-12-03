@@ -38,7 +38,7 @@ x = symbols("x")
 coeficientes = []
 
 # Numero de pontos a serem utilizados da tabela
-pontos = 5
+pontos = 60
 
 # Laço de leitura dos valores da coluna dos meses, e formação dos coeficientes Lk
 for indice in range(pontos):
@@ -65,7 +65,7 @@ for k in range(len(coeficientes)):
 
 # Impressão do polinomio de interpolacao de Lagrange, utilizando a biblioteca sympy para simplificar os termos em x
 print ('\n\n\nPolinomio de interpolacao de Lagrange')
-print ('P(',str(pontos-1),')=(x) = ', sympy.expand(pnl))
+print ('\nP(',str(pontos-1),')=(x) = ', sympy.expand(pnl))
 
 """
 
@@ -81,7 +81,7 @@ for i in range(pontos):
     Y[i] = precipt[i]
 
 # Definicao do grau do polinomio de minimos quadrados
-grau = 3
+grau = 2
 
 # Criando os vetores Hk da matriz
 Hk = np.zeros((grau+1, pontos))
@@ -116,7 +116,7 @@ for i in range(len(Pnmmq)):
     F += Pnmmq[i]*pow(x, i)
     
 print ('\n\n\nPolinomio do minimos quadrados de grau =', grau)
-print ('P'+ str(grau) + '(x)=', F)
+print ('\nP'+ str(grau) + '(x)=', F)
     
 
 """
@@ -131,7 +131,7 @@ F(x) = a0*cos(0x) + b0*sen(0x) + a1*cos(1x) + b1*sen(1x) + ... + ak*cos(kx) + bk
 
 # Os valores Yk se mantém os mesmos do anterior assim como o grau do polinomio e o numero de pontos
 
-ordem = 3
+ordem = 60
 
 # Uma matriz diagonal que terá ordem*2 + 1 linhas e colunas
 D = np.zeros((2*ordem + 1, 2* ordem + 1))
@@ -144,35 +144,50 @@ for i in range(2*ordem+1):
         else:
             D[i][j] = 0
 
-print ('\n\n\n',D)
+print ('\n\n\nD =',D)
 
-V = np.zeros((2*ordem+1, pontos))
+Xt = np.zeros(pontos)
+for i in range(pontos):
+    Xt[i] = i*2*(np.pi)/pontos
 
-for j in range(pontos):
-    for i in range(2*ordem+1):
+V = np.zeros((pontos, 2*ordem+1))
+
+for j in range(2*ordem+1):
+    for i in range(pontos):
         if j == 0:
             V[i][j] = 1
             
         elif j%2 == 0:
-            V[i][j] = 1 # Aqui deveria ter os cos(i*x)
+            V[i][j] = np.cos(Xt[i])
             
         else:
-            V[i][j] = 1 # Aqui deveria ter os sin(i*x)
-            
-print(V)
+            V[i][j] = np.sin(Xt[i])
+           
+#print('   1        cos1x           sen1x         cos2x         sen2x'   )
+print('V =',V)
+Vt = V.T
+print(Vt)
 
 R = np.zeros(2*ordem+1)
-
 for i in range(2*ordem+1):
-    R[i] = V[i].dot(Y)
-    
-print(R)
+    R[i] = Vt[i].dot(Y)
 
+print('R =', R)
 Ptr = np.linalg.solve(D,R)
 
 T = 0
+print('Ptr =',Ptr)
 for i in range(len(Ptr)):
-    T += Ptr[i]
-    
-print(T)
+        if i == 0:
+            T += Ptr[i] 
+        elif i%2 == 0:
+            T += Ptr[i]*cos(i*x)
+        else:
+            T += Ptr[i]*sin(i*x)
+
+
+
+print('\n\n\nPolinomio trigonometrico de ordem '+str(ordem)+' com '+str(pontos)+' pontos\n' )
+print(T)      
             
+
