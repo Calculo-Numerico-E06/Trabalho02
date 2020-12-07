@@ -81,7 +81,7 @@ for i in range(pontos):
     Y[i] = precipt[i]
 
 # Definicao do grau do polinomio de minimos quadrados
-grau = 2
+grau = 30
 
 # Criando os vetores Hk da matriz
 Hk = np.zeros((grau+1, pontos))
@@ -115,6 +115,7 @@ F = 0
 for i in range(len(Pnmmq)):
     F += Pnmmq[i]*pow(x, i)
     
+# Impressao do polinomio no terminal
 print ('\n\n\nPolinomio do minimos quadrados de grau =', grau)
 print ('\nP'+ str(grau) + '(x)=', F)
     
@@ -133,7 +134,7 @@ F(x) = a0*cos(0x) + b0*sen(0x) + a1*cos(1x) + b1*sen(1x) + ... + ak*cos(kx) + bk
 
 ordem = 60
 
-# Uma matriz diagonal que terá ordem*2 + 1 linhas e colunas
+# Uma matriz diagonal que terá ordem*2 + 1 linhas e colunas, a diagonal é preenchida com N para o primeiro e N/2 no restante
 D = np.zeros((2*ordem + 1, 2* ordem + 1))
 for i in range(2*ordem+1):
     for j in range(2*ordem+1):
@@ -144,39 +145,44 @@ for i in range(2*ordem+1):
         else:
             D[i][j] = 0
 
-print ('\n\n\nD =',D)
+#print ('\n\n\nD =',D)
 
+# Divisao da amostra em um intervalo de 0 a 2pi
 Xt = np.zeros(pontos)
 for i in range(pontos):
     Xt[i] = i*2*(np.pi)/pontos
 
+# Vetor de senos e cossenos de x multiplicado pelo indice
 V = np.zeros((pontos, 2*ordem+1))
-
 for j in range(2*ordem+1):
     for i in range(pontos):
         if j == 0:
             V[i][j] = 1
             
         elif j%2 == 0:
-            V[i][j] = np.cos(Xt[i])
+            V[i][j] = np.cos(j*Xt[i])
             
         else:
-            V[i][j] = np.sin(Xt[i])
+            V[i][j] = np.sin(j*Xt[i])
            
 #print('   1        cos1x           sen1x         cos2x         sen2x'   )
-print('V =',V)
+#print('V =',V)
 Vt = V.T
-print(Vt)
+#print(Vt)
 
+# Vetor de resultados b
 R = np.zeros(2*ordem+1)
 for i in range(2*ordem+1):
     R[i] = Vt[i].dot(Y)
 
-print('R =', R)
+# Solução do sistema linear
+#print('R =', R)
 Ptr = np.linalg.solve(D,R)
 
+
+# Soma dos termos da função
 T = 0
-print('Ptr =',Ptr)
+#print('Ptr =',Ptr)
 for i in range(len(Ptr)):
         if i == 0:
             T += Ptr[i] 
@@ -186,7 +192,7 @@ for i in range(len(Ptr)):
             T += Ptr[i]*sin(i*x)
 
 
-
+# Impressão da função no terminal
 print('\n\n\nPolinomio trigonometrico de ordem '+str(ordem)+' com '+str(pontos)+' pontos\n' )
 print(T)      
             
